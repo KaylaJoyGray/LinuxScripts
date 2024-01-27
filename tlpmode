@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+echo "Switching TLP configuration"
+
+sudo mv /etc/tlp.conf /etc/tlp.tmp
+sudo mv /etc/tlp.alt /etc/tlp.conf
+sudo mv /etc/tlp.tmp /etc/tlp.alt
+
+echo "Restarting TLP service"
+sudo systemctl daemon-reload
+sudo systemctl restart tlp
+
+echo "Use governor to view the current CPU governor"

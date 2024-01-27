@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+###
+#Get Variables
+###
+
+#No need to change this now as I only have 1 GitHub account, but make it a variable for clarity
+GitHubUser="KaylaJoyGray"
+
+### Repository Name
+while true; do
+  echo "Enter the name of the repository:"
+  read -r repo
+  if [[ -n $repo ]]; then
+    break
+  else
+    echo "Repository name is empty"
+  fi
+done
+
+repo_l="${repo}.GitHub"
+
+### Project Directory
+while true; do
+  echo "Enter the project directory:"
+  read -r dir
+  if [[ -d $dir ]]; then
+    break
+  else
+    echo "$dir is not a valid directory"
+  fi
+done
+
+mkdir "$dir" || {
+  echo "Failed to create project directory: $dir"
+  cd "$dir" || {
+    echo "Failed to switch to directory: $dir"
+    exit 1
+  }
+}
+
+###
+#Configure SSH
+###
+
+echo "Creating keys for repository $repo"
+
+ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f "$HOME"/.ssh/"$repo_l"
+if [[ $? -ne 0 ]]; then
+  echo "Fatal: ssh-keygen failed"
+  exit 1
+fi
+
+ssh-add "$HOME"/.ssh/"$repo_l"
+if [[ $? -ne 0 ]]; then
+  echo "Fatal: ssh-add failed"
+  exit 1
+fi
+
+echo "Updating $HOME/.ssh/config"
+
+cat << EOF >> "$HOME"/.ssh/config
+
+Host github.com-$repo
+	HostName github.com
+	User git
+	IdentityFile ~/.ssh/$repo_l
+	IdentitiesOnly yes
+EOF
+
+###
+# Configure git
+###
+#cd "$dir"
+git init
+# shellcheck disable=SC2035
+git add *
+git commit -m "Project created"
+git remote add origin git@github.com-"$repo":$GitHubUser/"$repo".git
+if [[ $? -ne 0 ]]; then
+  echo "Warning: git remote add origin failed. Please set the origin within your local repository before pushing/pulling"
+fi
+
+echo
+echo "Finished"
+echo "Add the following deploy key $repo_l.pub at http://www.github.com/ to access your remote repository:"
+echo
+cat "$HOME"/.ssh/"$repo_l".pub
