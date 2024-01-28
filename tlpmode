@@ -2,6 +2,8 @@
 
 echo "Switching TLP configuration"
 
+sudo systemctl stop tlp
+
 sudo mv /etc/tlp.conf /etc/tlp.tmp
 sudo mv /etc/tlp.alt /etc/tlp.conf
 sudo mv /etc/tlp.tmp /etc/tlp.alt
