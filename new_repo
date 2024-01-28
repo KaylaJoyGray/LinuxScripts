@@ -79,7 +79,7 @@ if [[ $commit = "y" ]]; then
     git init
     # shellcheck disable=SC2035
     git add *
-    git commit -m "Project created"
+    git commit -m "Initial commit"
 fi
 
 git remote add origin git@github.com-"$repo":$GitHubUser/"$repo".git
