@@ -71,11 +71,17 @@ EOF
 ###
 # Configure git
 ###
-#cd "$dir"
-git init
-# shellcheck disable=SC2035
-git add *
-git commit -m "Project created"
+
+echo "Create initial commit? (y/n)"
+read -r commit
+
+if [[ $commit = "y" ]]; then
+    git init
+    # shellcheck disable=SC2035
+    git add *
+    git commit -m "Project created"
+fi
+
 git remote add origin git@github.com-"$repo":$GitHubUser/"$repo".git
 if [[ $? -ne 0 ]]; then
   echo "Warning: git remote add origin failed. Please set the origin within your local repository before pushing/pulling"
