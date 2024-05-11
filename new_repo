@@ -27,16 +27,16 @@ while true; do
   if [[ -d $dir ]]; then
     break
   else
-    echo "$dir is not a valid directory"
+    mkdir "$dir" || {
+      echo "Failed to create project directory: $dir"
+    }
+    break
   fi
 done
 
-mkdir "$dir" || {
-  echo "Failed to create project directory: $dir"
-  cd "$dir" || {
-    echo "Failed to switch to directory: $dir"
-    exit 1
-  }
+cd "$dir" || {
+        echo "Failed to switch to directory: $dir"
+        exit 1
 }
 
 ###
