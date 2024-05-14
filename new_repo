@@ -84,7 +84,11 @@ fi
 
 git remote add origin git@github.com-"$repo":$GitHubUser/"$repo".git
 if [[ $? -ne 0 ]]; then
-  echo "Warning: git remote add origin failed. Please set the origin within your local repository before pushing/pulling"
+  echo "Replacing remote origin url with alias"
+  git config --replace-all remote.origin.url git@github.com-"$repo":$GitHubUser/"$repo".git
+  if [[ $? -ne 0 ]]; then
+    echo "Warning: failed to set remote.origin.url - Please set the origin within your local repository before pushing/pulling"
+  fi
 fi
 
 echo
