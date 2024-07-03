@@ -1,0 +1,12 @@
+[Unit]
+Description=Thinkfan configuration generator
+After=thinkfan.service
+
+[Service]
+ExecStart=/usr/local/bin/thinkfan_gen
+ExecReload=/usr/local/bin/thinkfan_gen
+Type=oneshot
+Restart=no
+
+[Install]
+WantedBy=default.target

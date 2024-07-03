@@ -1,0 +1,32 @@
+#!/bin/sh
+##########################################################################
+# This script is intended to run as a systemd service as the root account
+##########################################################################
+
+# run condition
+if ! systemctl status thinkfan; then
+    
+DEVICES=$(find /sys/devices -type f -name "temp*_input"|sed 's/^/hwmon /g')
+CONFIG=/etc/thinkfan.conf
+
+systemctl stop thinkfan
+
+rm $CONFIG
+touch $CONFIG
+
+echo "$DEVICES" > $CONFIG
+
+# configure levels here if needed
+cat << EOF >> $CONFIG
+    
+("level auto",	0,	65)
+("level full-speed",	65,	32767)
+EOF
+
+systemctl daemon-reload
+if ! systemctl start thinkfan; then
+    dbus-launch notify-send "Fan Control Lost" "Unable to generate ThinkFan configuration\n\nSee \"journalctl -xeu thinkfan.service\" for details" --urgency=critical
+fi    
+
+# end
+fi

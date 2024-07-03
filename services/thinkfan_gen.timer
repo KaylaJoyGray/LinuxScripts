@@ -1,0 +1,11 @@
+[Unit]
+Description=ThinkFan configuration generator
+Requires=thinkfan_gen.service
+
+[Timer]
+Unit=thinkfan_gen.service
+OnBootSec=1min
+OnUnitActiveSec=1min
+
+[Install]
+WantedBy=timers.target
