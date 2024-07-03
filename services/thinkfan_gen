@@ -1,7 +1,12 @@
 #!/bin/sh
 ##########################################################################
 # This script is intended to run as a systemd service as the root account
-##########################################################################
+#
+# HWMON paths/symlinks Can change after boot or kernel updates.
+# This service periodically checks if thinkfan is running and attempts
+# to automatically generate a configuration file if thinkfan has failed.
+#
+#########################################################################
 
 # run condition
 if ! systemctl status thinkfan; then
