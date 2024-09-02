@@ -12,7 +12,11 @@
 if ! systemctl status thinkfan; then
     
 DEVICES=$(find /sys/devices -type f -name "temp*_input"|sed 's/^/hwmon /g')
+#DEVICES="nope" # intentionally fuck up config to test notifications
 CONFIG=/etc/thinkfan.conf
+
+# Remove problematic device from devices (device specific?)
+DEVICES=$(echo "$DEVICES" | grep -v '^hwmon .*temp8_input$')
 
 systemctl stop thinkfan
 
@@ -24,14 +28,14 @@ echo "$DEVICES" > $CONFIG
 # configure levels here if needed
 cat << EOF >> $CONFIG
     
-("level auto",	0,	65)
-("level full-speed",	65,	32767)
+("level auto",	0,	80)
+("level full-speed",	80,	32767)
 EOF
 
 systemctl daemon-reload
 if ! systemctl start thinkfan; then
     dbus-launch notify-send "Fan Control Lost" "Unable to generate ThinkFan configuration\n\nSee \"journalctl -xeu thinkfan.service\" for details" --urgency=critical
-fi    
+fi    # this appears to be non-functional for now - dbus-launch will send the notification from a root shell, but does nothing if running as a systemd service...
 
 # end
 fi

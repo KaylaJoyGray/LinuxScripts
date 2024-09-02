@@ -7,6 +7,8 @@ ExecStart=/usr/local/bin/thinkfan_gen
 ExecReload=/usr/local/bin/thinkfan_gen
 Type=oneshot
 Restart=no
+IgnoreSIGPIPE=no
+Environment="DISPLAY=:0" "XAUTHORITY=/home/kayla/.Xauthority"
 
 [Install]
 WantedBy=default.target
